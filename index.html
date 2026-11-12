@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>PayBuddy AI - Freelancer Payment Agent</title>
+<style>
+body{font-family:Arial; background:#f0f4ff; text-align:center; padding:30px}
+.box{background:white; padding:20px; border-radius:15px; max-width:500px; margin:auto; box-shadow:0 4px 20px #ccc}
+input,textarea{width:90%; padding:10px; margin:10px; border-radius:8px; border:1px solid #ccc}
+button{background:#003087; color:white; padding:12px 20px; border:none; border-radius:8px; cursor:pointer; font-size:16px}
+</style>
+</head>
+<body>
+<div class="box">
+<h2>💙 PayBuddy AI</h2>
+<p>AI Freelancer Payment Agent</p>
+<input id="client" placeholder="Client Name - ex: Ramesh" />
+<input id="work" placeholder="Work - ex: Logo Design" />
+<input id="amount" placeholder="Amount in USD - ex: 50" />
+<button onclick="makeInvoice()">AI Invoice Create Pannu</button>
+<div id="result" style="margin-top:20px; text-align:left"></div>
+<div id="paypal-button-container" style="margin-top:20px"></div>
+</div>
+
+<script src="https://www.paypal.com/sdk/js?client-id=AZbchsOBqvM-qFFnLZzqecH9GS74WkDdDGaapcVe6-QOa63ktf8RAAV7U1pyo9dN0mQYR7-9_0AAC87Q&currency=USD"></script>
+<script>
+function makeInvoice(){
+  let c = document.getElementById('client').value;
+  let w = document.getElementById('work').value;
+  let a = document.getElementById('amount').value;
+  document.getElementById('result').innerHTML = 
+  `<b>Invoice for ${c}</b><br>Work: ${w}<br>Amount: $${a}<br><br>
+  <i>AI Message: Hi ${c}, Thanks for your work! Please pay $${a} for ${w} via PayPal link below.</i><br><br>
+  <b>AI Reminder (if late):</b> Hi ${c}, Gentle reminder, payment $${a} pending. Please pay via PayPal. Thanks!`;
+  
+  paypal.Buttons({
+    createOrder: function(data, actions){
+      return actions.order.create({ purchase_units:[{ amount:{ value: a } }] });
+    },
+    onApprove: function(data, actions){
+      return actions.order.capture().then(function(details){
+        alert('Payment Success by ' + details.payer.name.given_name + ' ma!');
+      });
+    }
+  }).render('#paypal-button-container');
+}
+</script>
+</body>
+</html>
